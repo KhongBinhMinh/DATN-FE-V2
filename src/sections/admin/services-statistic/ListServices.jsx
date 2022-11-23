@@ -21,6 +21,7 @@ import {
   Title,
   Tooltip,
 } from 'chart.js'
+import serviceStatisticApi from '../../../api/service-statistic'
 
 const ListServices = () => {
   ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
@@ -34,49 +35,33 @@ const ListServices = () => {
     setAnchorEl()
   }
   const [chart, setChart] = useState({})
-  var baseUrl = 'https://api.coinranking.com/v2/coins/?limit=10'
-  var proxyUrl = 'https://cors-anywhere.herokuapp.com/'
-  var apiKey = 'coinrankingbcfe6e59b020fbe0e471b2a060949d7d4eea1d79c111d2b7'
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetch(`${proxyUrl}${baseUrl}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': `${apiKey}`,
-          'Access-Control-Allow-Origin': '*',
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            response.json().then((json) => {
-              console.log(json.data)
-              setChart(json.data)
-            })
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+  const fetchData = async () => {
+    try {
+      const datas = await serviceStatisticApi.getChart()
+      setChart(datas)
+    } catch (error) {
+      console.log(error)
     }
+  }
+  useEffect(() => {
     fetchData()
-  }, [baseUrl, proxyUrl, apiKey])
+  }, [])
 
   console.log(chart)
 
   const data = {
-    labels: chart?.coins?.map((x) => x.name),
+    labels: chart?.services?.map((x) => x.name),
     datasets: [
       {
-        label: `lowVolume`,
-        data: chart?.coins?.map((x) => x.marketCap),
+        label: `doanh thu`,
+        data: chart?.services?.map((x) => x.serviceRevenue),
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
         yAxisID: 'y',
       },
       {
-        label: `sparkline`,
-        data: chart?.coins?.map((x) => x.listedAt),
+        label: `lượt đặt`,
+        data: chart?.services?.map((x) => x.serviceOrder),
         backgroundColor: 'rgba(53, 162, 235, 0.5)',
         yAxisID: 'y1',
       },
@@ -116,7 +101,7 @@ const ListServices = () => {
         overflowX: 'auto',
         margin: '25px 0 0',
         padding: { xs: '15px', sm: '30px' },
-        height: '800px',
+        height: '700px',
       }}
     >
       <Grid container justifyContent='space-between' paddingBottom={{ md: '10px', xs: '15px' }}>

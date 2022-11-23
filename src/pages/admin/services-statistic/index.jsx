@@ -3,6 +3,7 @@ import { Typography, Breadcrumbs, Link } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 import ListServices from '../../../sections/admin/services-statistic/ListServices'
 import SummaryStatistic from '../../../sections/admin/services-statistic/SummaryStatistic'
+import TableTopService from '../../../sections/admin/services-statistic/TableTopService'
 
 const ServiceStatistic = () => {
   return (
@@ -20,6 +21,7 @@ const ServiceStatistic = () => {
       </Breadcrumbs>
       <SummaryStatistic />
       <ListServices />
+      <TableTopService />
     </>
   )
 }
